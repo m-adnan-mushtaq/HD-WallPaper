@@ -1,0 +1,13 @@
+export const DARK_GREY_COLOR = '#2a303f';
+export const DARK_COLOR = '#111928';
+export const PRIMARY_COLOR = '#887ef9';
+export const SECONDARY_COLOR = '#3a82f6';
+export const LIGHT_COLOR = '#E1E1E4';
+export const WHITE_COLOR = '#fff';
+export const SUCCESS_COLOR = '#2dd4bf';
+export const ERROR_COLOR = '#ff8092';
+export const WARNING_COLOR = '#fcd34d';
+export const PRIMARY_HOVER_COLOR = '#E1E1E4';
+export const PRIMARY_TEXT_COLOR = '#a098fa';
+export const DARK_SECONDARY_COLOR = '#414753';
+export const SILVER_COLOR = '#cbd5e1';
