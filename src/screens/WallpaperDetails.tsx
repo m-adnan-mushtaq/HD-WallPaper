@@ -1,30 +1,31 @@
+import {applyWallpaper} from '@codeooze/react-native-wallpaper-manager';
+import {RouteProp, useRoute} from '@react-navigation/native';
+import React from 'react';
 import {
-  View,
-  Text,
+  Alert,
   Dimensions,
   StyleSheet,
+  Text,
   ToastAndroid,
-  Alert,
+  View,
 } from 'react-native';
-import React from 'react';
-import defaultStyles from '../style';
-import {RouteProp, useRoute} from '@react-navigation/native';
-import {RootStackParamList} from '../types';
-import LazyImage from '../components/Design/LazyImage';
-import {colors} from '../theme';
-import UiButton from '../components/Design/UiButton';
+import ReactNativeBlobUtil from 'react-native-blob-util';
 import {CustomIcon} from '../components/Design';
-import {applyWallpaper} from '@codeooze/react-native-wallpaper-manager';
+import LazyImage from '../components/Design/LazyImage';
+import UiButton from '../components/Design/UiButton';
+import defaultStyles from '../style';
+import {colors} from '../theme';
+import {RootStackParamList} from '../types';
 import {permissionUtils} from '../utils';
-import RNFetchBlob from 'rn-fetch-blob';
-
 const {width, height} = Dimensions.get('screen');
 
 const WallpaperDetails = () => {
+  //hooks
   const {
     params: {data: wallpaper},
   } = useRoute<RouteProp<RootStackParamList, 'Wallpaper'>>();
 
+  //actions
   const handleSetWallPaper = async () => {
     try {
       await applyWallpaper(wallpaper.largeImageURL, 'Home');
@@ -42,17 +43,22 @@ const WallpaperDetails = () => {
     try {
       const isRequestGranted = await permissionUtils.requestUserStorage();
       if (!isRequestGranted) return;
-      const res = await RNFetchBlob.config({
+      //get file extension from url
+      const fileExtension = wallpaper.largeImageURL.split('.').pop();
+      const res = await ReactNativeBlobUtil.config({
         fileCache: true,
-        appendExt: 'png',
+        appendExt: fileExtension,
         addAndroidDownloads: {
+          useDownloadManager: true, // <-- this is the only thing required
           notification: true,
-          title: `WallPaper ${wallpaper.id} Downloaded`,
-          mime: 'image/png',
+          title: `${wallpaper.id}.${fileExtension}`,
+          mime: `image/${fileExtension}`,
+          description: 'File downloaded by download manager.',
+          path: `${ReactNativeBlobUtil.fs.dirs.LegacyPictureDir}/${wallpaper.id}.${fileExtension}`,
         },
-      }).fetch('GET', wallpaper.userImageURL);
-      ToastAndroid.show(`Saved! ${res.path()}`, ToastAndroid.SHORT);
-      res.flush();
+      }).fetch('GET', wallpaper.largeImageURL);
+      ToastAndroid.show(`Save to Gallery!`, ToastAndroid.SHORT);
+      // res.flush();
     } catch (error) {
       Alert.alert('Download Fail or Network Error');
     }

@@ -3,7 +3,7 @@ import {
   NavigationContainer,
   useRoute,
 } from '@react-navigation/native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {colors, darkTheme} from '../../theme';
@@ -15,11 +15,20 @@ import {
   SettingScreen,
 } from '../../screens';
 import {CustomIcon} from '../Design';
-import {StatusBar} from 'react-native';
+import {
+  Animated,
+  Easing,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  StatusBar,
+} from 'react-native';
 import {TransitionPresets, createStackNavigator} from '@react-navigation/stack';
 import CategoryDetails from '../../screens/CategoryDetails';
 import LinearGradient from 'react-native-linear-gradient';
 import WallpaperDetails from '../../screens/WallpaperDetails';
+import {common} from '../../constants';
+import {tabBarStyle} from '../../theme/darkTheme';
 
 const Tab = createMaterialTopTabNavigator<BottomParamList>();
 
@@ -66,14 +75,7 @@ function MyTabs() {
         tabBarInactiveTintColor: colors.LIGHT_COLOR,
         tabBarShowLabel: false,
         tabBarPressColor: 'transparent',
-        tabBarStyle: {
-          backgroundColor: colors.DARK_GREY_COLOR,
-          marginHorizontal: 20,
-          borderRadius: 16,
-          marginBottom: 8,
-          elevation: 8,
-          minHeight: 60,
-        },
+        tabBarStyle,
         tabBarItemStyle: {
           justifyContent: 'center',
           alignItems: 'center',
