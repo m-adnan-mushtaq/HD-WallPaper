@@ -1,34 +1,22 @@
-import {
-  DarkTheme,
-  NavigationContainer,
-  useRoute,
-} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import React, {Suspense, lazy} from 'react';
 
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {colors, darkTheme} from '../../theme';
 import {BottomParamList, RootStackParamList} from '../../types';
-import {
-  CategoryScreen,
-  HomeScreen,
-  SearchScreen,
-  SettingScreen,
-} from '../../screens';
+import {HomeScreen} from '../../screens';
 import {CustomIcon} from '../Design';
-import {
-  Animated,
-  Easing,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  StatusBar,
-} from 'react-native';
+import {StatusBar} from 'react-native';
 import {TransitionPresets, createStackNavigator} from '@react-navigation/stack';
-import CategoryDetails from '../../screens/CategoryDetails';
 import LinearGradient from 'react-native-linear-gradient';
-import WallpaperDetails from '../../screens/WallpaperDetails';
-import {common} from '../../constants';
 import {tabBarStyle} from '../../theme/darkTheme';
+import Spinner from './Spinner';
+
+const SearchScreen = lazy(() => import('../../screens/Search'));
+const CategoryScreen = lazy(() => import('../../screens/Categories'));
+const CategoryDetails = lazy(() => import('../../screens/CategoryDetails'));
+const WallpaperDetails = lazy(() => import('../../screens/WallpaperDetails'));
+const SettingScreen = lazy(() => import('../../screens/Settings'));
 
 const Tab = createMaterialTopTabNavigator<BottomParamList>();
 
@@ -105,52 +93,54 @@ function MyTabs() {
 const RootStack = createStackNavigator<RootStackParamList>();
 function RootStackRoutes() {
   return (
-    <RootStack.Navigator
-      screenOptions={{
-        headerTitleStyle: {color: colors.LIGHT_COLOR},
-        headerTintColor: colors.LIGHT_COLOR,
-        cardStyle: {
-          flex: 1,
-          backgroundColor: colors.DARK_COLOR,
-        },
-        headerBackground: () => (
-          <LinearGradient
-            style={{flex: 1, elevation: 10}}
-            useAngle
-            angle={60}
-            colors={[
-              colors.DARK_COLOR,
-              colors.DARK_GREY_COLOR,
-              colors.DARK_GREY_COLOR,
-              colors.DARK_SECONDARY_COLOR,
-              colors.DARK_COLOR,
-            ]}
-          />
-        ),
-      }}>
-      <RootStack.Screen
-        options={{
-          headerShown: false,
-        }}
-        name="HomeTabs"
-        component={MyTabs}
-      />
-      <RootStack.Screen
-        options={{
-          ...TransitionPresets.SlideFromRightIOS,
-        }}
-        name="CategoryDetails"
-        component={CategoryDetails}
-      />
-      <RootStack.Screen
-        options={{
-          title: 'Set WallPaper',
-          ...TransitionPresets.ModalPresentationIOS,
-        }}
-        name="Wallpaper"
-        component={WallpaperDetails}
-      />
-    </RootStack.Navigator>
+    <Suspense fallback={<Spinner />}>
+      <RootStack.Navigator
+        screenOptions={{
+          headerTitleStyle: {color: colors.LIGHT_COLOR},
+          headerTintColor: colors.LIGHT_COLOR,
+          cardStyle: {
+            flex: 1,
+            backgroundColor: colors.DARK_COLOR,
+          },
+          headerBackground: () => (
+            <LinearGradient
+              style={{flex: 1, elevation: 10}}
+              useAngle
+              angle={60}
+              colors={[
+                colors.DARK_COLOR,
+                colors.DARK_GREY_COLOR,
+                colors.DARK_GREY_COLOR,
+                colors.DARK_SECONDARY_COLOR,
+                colors.DARK_COLOR,
+              ]}
+            />
+          ),
+        }}>
+        <RootStack.Screen
+          options={{
+            headerShown: false,
+          }}
+          name="HomeTabs"
+          component={MyTabs}
+        />
+        <RootStack.Screen
+          options={{
+            ...TransitionPresets.SlideFromRightIOS,
+          }}
+          name="CategoryDetails"
+          component={CategoryDetails}
+        />
+        <RootStack.Screen
+          options={{
+            title: 'Set WallPaper',
+            ...TransitionPresets.ModalPresentationIOS,
+          }}
+          name="Wallpaper"
+          component={WallpaperDetails}
+        />
+      </RootStack.Navigator>
+    </Suspense>
   );
 }
 

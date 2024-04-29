@@ -20,7 +20,7 @@ const SettingsRow = ({
         paddingVertical: 8,
         paddingHorizontal: 4,
         borderRadius: 4,
-        marginVertical: 4,
+        margin: 4,
       }}>
       <View
         style={{
